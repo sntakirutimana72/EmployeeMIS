@@ -2,9 +2,9 @@ package com.employeemis.models;
 
 import java.time.LocalDate;
 
-public interface Trackable {
+public interface Trackable<T> {
   // Get Unique ID
-  int getId();
+  T getId();
 
   // Creation date
   LocalDate getCreatedAt();

@@ -5,7 +5,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-public class User extends ActivableEntity {
+public class User extends ActivableEntity<Integer> {
+  private static int autoIDCounter = 0;
   private String username;
   private String password;
   private LocalDate lastLogin = null;
@@ -13,7 +14,7 @@ public class User extends ActivableEntity {
   private final Set<Permission> permissions;
 
   public User(String username, String password, int employeeID) {
-    super();
+    super(++autoIDCounter);
     setUsername(username);
     setPassword(password);
     setIsActive(true);

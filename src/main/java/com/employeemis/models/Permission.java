@@ -4,7 +4,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Permission extends Entity {
+public class Permission extends Entity<Integer> {
+  private static int autoIDCounter = 0;
   private String name;
   private final String resource;
   private final Set<PermissionActions> actions;
@@ -14,6 +15,7 @@ public class Permission extends Entity {
   }
 
   public Permission(String name, String resource, PermissionActions ... actions) {
+    super(++autoIDCounter);
     this.resource = resource;
     this.actions = new HashSet<>();
 

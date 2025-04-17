@@ -4,16 +4,20 @@ import org.junit.jupiter.api.*;
 
 import java.lang.reflect.Method;
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class EmployeeTest {
-  private Employee employee;
+  private Employee<Integer> employee;
 
   @BeforeEach
   void setUp() {
-    Department department = new Department("IT");
-    employee = new Employee("Test", department, 20.3, 0, 5);
+    Department<Integer> department = new Department<>("IT");
+    employee = new Employee<>(1, "Test", department, 20.3, 0, 5);
   }
 
   @AfterEach
@@ -69,9 +73,9 @@ class EmployeeTest {
   @Test
   @DisplayName("Should be able set department from department side")
   void testBelongsToFromDepartmentSide() {
-    Department previous = employee.getDepartment();
+    Department<Integer> previous = employee.getDepartment();
     assertTrue(previous.getEmployees().contains(employee));
-    Department current = new Department("HR");
+    Department<Integer> current = new Department<>("HR");
     current.addEmployee(employee);
     assertEquals(employee.getDepartment().getId(), current.getId());
     assertFalse(previous.getEmployees().contains(employee));
@@ -80,12 +84,27 @@ class EmployeeTest {
   @Test
   @DisplayName("Should be to update department from employee side")
   void testBelongsToFromSelf() {
-    Department previous = employee.getDepartment();
+    Department<Integer> previous = employee.getDepartment();
     assertTrue(previous.getEmployees().contains(employee));
-    Department current = new Department("HR");
+    Department<Integer> current = new Department<>("HR");
     employee.setDepartment(current);
     assertEquals(current.getId(), employee.getDepartment().getId());
     assertFalse(previous.getEmployees().contains(employee));
     assertTrue(current.getEmployees().contains(employee));
+  }
+
+  @Test
+  @DisplayName("Should sort employee by :yearsOfExperience in descending order")
+  void testIsSortableByYearsOfExperience() {
+    Department<Integer> dept = new Department<>("IT");
+    List<Employee<Integer>> employees = Arrays.asList(
+      new Employee<>(1, "e1", dept, 100, 4, 5),
+      new Employee<>(2, "e2", dept, 100, 7, 5),
+      new Employee<>(3, "e3", dept, 100, 2, 5)
+    );
+    Collections.sort(employees);
+    assertEquals(7, employees.get(0).getYearsOfExperience());
+    assertEquals(4, employees.get(1).getYearsOfExperience());
+    assertEquals(2, employees.get(2).getYearsOfExperience());
   }
 }

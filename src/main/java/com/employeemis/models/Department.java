@@ -3,27 +3,28 @@ package com.employeemis.models;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Department extends Entity {
+public class Department<T> extends Entity<Integer> {
+  private static int autoIDCounter = 0;
   private String name;
-  private final Set<Employee> employees;
+  private final Set<Employee<T>> employees;
 
   public Department(String name) {
-    super();
+    super(++autoIDCounter);
     setName(name);
 
     employees = new HashSet<>();
   }
 
-  public void addEmployee(Employee employee) {
+  public void addEmployee(Employee<T> employee) {
     if (employees.add(employee))
       employee.setDepartment(this);
   }
 
-  public void removeEmployee(Employee employee) {
+  public void removeEmployee(Employee<T> employee) {
     employees.remove(employee);
   }
 
-  public Set<Employee> getEmployees() {
+  public Set<Employee<T>> getEmployees() {
     return employees;
   }
 

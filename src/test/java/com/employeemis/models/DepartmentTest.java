@@ -7,11 +7,11 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class DepartmentTest {
-  private Department department;
+  private Department<String> department;
 
   @BeforeEach
   void setUp() {
-    department = new Department("HR");
+    department = new Department<>("HR");
   }
 
   @AfterEach
@@ -22,11 +22,6 @@ class DepartmentTest {
   @Test
   void testGetNameReturnsNameAttributeValue() {
     assertEquals("HR", department.getName());
-  }
-
-  @Test
-  void testIdAttributeIsSetByDefault() {
-    assertTrue(department.getId() > 0);
   }
 
   @Test

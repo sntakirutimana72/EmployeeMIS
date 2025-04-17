@@ -1,10 +1,10 @@
 package com.employeemis.models;
 
-public abstract class ActivableEntity extends Entity implements Activable {
+public abstract class ActivableEntity<T> extends Entity<T> implements Activable {
   private boolean isActive;
 
-  public ActivableEntity() {
-    super();
+  public ActivableEntity(T id) {
+    super(id);
   }
 
   @Override

@@ -2,15 +2,13 @@ package com.employeemis.models;
 
 import java.time.LocalDate;
 
-public abstract class Entity implements Trackable {
-  private static int uniqueIDTracker = 0;
-
-  private final int id;
+public abstract class Entity<T> implements Trackable<T> {
+  private final T id;
   private final LocalDate createdAt;
   private LocalDate updatedAt;
 
-  public Entity() {
-    id = ++uniqueIDTracker;
+  public Entity(T id) {
+    this.id = id;
     createdAt = LocalDate.now();
     setUpdatedAt();
   }
@@ -20,7 +18,7 @@ public abstract class Entity implements Trackable {
   }
 
   @Override
-  public int getId() {
+  public T getId() {
     return id;
   }
 

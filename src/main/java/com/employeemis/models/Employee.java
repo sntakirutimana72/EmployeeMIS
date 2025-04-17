@@ -1,17 +1,15 @@
 package com.employeemis.models;
 
-import java.util.Objects;
-
-public class Employee extends ActivableEntity implements Employable {
+public class Employee<T> extends ActivableEntity<T> implements Employable<T> {
   // Contracted from Employable interface
   private String name;
-  private Department department;
+  private Department<T> department;
   private double salary;
   private int yearsOfExperience;
   private double performanceRate;
 
-  public Employee(String name, Department department, double salary, int yearsOfExperience, double performanceRate) {
-    super();
+  public Employee(T id, String name, Department<T> department, double salary, int yearsOfExperience, double performanceRate) {
+    super(id);
     setName(name);
     assignDepartment(department);
     setSalary(salary);
@@ -25,16 +23,16 @@ public class Employee extends ActivableEntity implements Employable {
     this.name = name;
   }
 
-  private void assignDepartment(Department department) {
+  private void assignDepartment(Department<T> department) {
     this.department = department;
     department.addEmployee(this);
   }
 
   @Override
-  public void setDepartment(Department department) {
+  public void setDepartment(Department<T> department) {
     if (this.department == department)
       return;
-    Department previous = this.department;
+    Department<T> previous = this.department;
     assignDepartment(department);
     previous.removeEmployee(this);
   }
@@ -60,7 +58,7 @@ public class Employee extends ActivableEntity implements Employable {
   }
 
   @Override
-  public Department getDepartment() {
+  public Department<T> getDepartment() {
     return department;
   }
 
@@ -77,5 +75,10 @@ public class Employee extends ActivableEntity implements Employable {
   @Override
   public double getPerformanceRate() {
     return performanceRate;
+  }
+
+  @Override
+  public int compareTo(Employable<T> emp) {
+    return Integer.compare(emp.getYearsOfExperience(), this.getYearsOfExperience());
   }
 }

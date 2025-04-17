@@ -1,13 +1,13 @@
 package com.employeemis.models;
 
-public interface Employable {
+public interface Employable<T> extends Comparable<Employable<T>> {
   // Get & set employee name
   String getName();
   void setName(String name);
 
   // Get & set department under which employee is allocated
-  Department getDepartment();
-  void setDepartment(Department department);
+  Department<T> getDepartment();
+  void setDepartment(Department<T> department);
 
   // Get & set employee salary
   double getSalary();
