@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class DepartmentTest {
-  private Department<String> department;
+  private Department<Integer> department;
 
   @BeforeEach
   void setUp() {
@@ -28,5 +28,12 @@ class DepartmentTest {
   void testSetNameChangesNameAttributeValue() {
     department.setName("IT");
     assertEquals("IT", department.getName());
+  }
+
+  @Test
+  void canSetEmployeeDepartmentThroughBackRef() {
+    Employee<Integer> emp = new Employee<>(1, "John Ben", null, 32, 2, 3);
+    department.addEmployee(emp);
+    assertEquals(emp.getDepartment(), department);
   }
 }

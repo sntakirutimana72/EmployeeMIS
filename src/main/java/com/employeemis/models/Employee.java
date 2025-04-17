@@ -1,5 +1,9 @@
 package com.employeemis.models;
 
+import com.employeemis.utils.Validators;
+
+import java.util.Objects;
+
 public class Employee<T> extends ActivableEntity<T> implements Employable<T> {
   // Contracted from Employable interface
   private String name;
@@ -19,11 +23,14 @@ public class Employee<T> extends ActivableEntity<T> implements Employable<T> {
   }
 
   @Override
-  public void setName(String name) {
+  public void setName(String name) throws IllegalArgumentException {
+    Validators.Employee.validateName(name);
     this.name = name;
   }
 
   private void assignDepartment(Department<T> department) {
+    if (Objects.isNull(department))
+      return;
     this.department = department;
     department.addEmployee(this);
   }
@@ -41,21 +48,25 @@ public class Employee<T> extends ActivableEntity<T> implements Employable<T> {
       return;
     Department<T> previous = this.department;
     assignDepartment(department);
-    previous.removeEmployee(this);
+    if (!Objects.isNull(previous))
+      previous.removeEmployee(this);
   }
 
   @Override
-  public void setSalary(double salary) {
+  public void setSalary(double salary) throws IllegalArgumentException {
+    Validators.Employee.validateSalary(salary);
     this.salary = salary;
   }
 
   @Override
-  public void setYearsOfExperience(int yearsOfExperience) {
+  public void setYearsOfExperience(int yearsOfExperience) throws IllegalArgumentException {
+    Validators.Employee.validateYearsOfExperience(yearsOfExperience);
     this.yearsOfExperience = yearsOfExperience;
   }
 
   @Override
-  public void setPerformanceRate(double performanceRate) {
+  public void setPerformanceRate(double performanceRate) throws IllegalArgumentException {
+    Validators.Employee.validatePerformanceRate(performanceRate);
     this.performanceRate = performanceRate;
   }
 

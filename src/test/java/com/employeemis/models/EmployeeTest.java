@@ -98,9 +98,9 @@ class EmployeeTest {
   void testIsSortableByYearsOfExperience() {
     Department<Integer> dept = new Department<>("IT");
     List<Employee<Integer>> employees = Arrays.asList(
-      new Employee<>(1, "e1", dept, 100, 4, 5),
-      new Employee<>(2, "e2", dept, 100, 7, 5),
-      new Employee<>(3, "e3", dept, 100, 2, 5)
+      new Employee<>(1, "first", dept, 100, 4, 5),
+      new Employee<>(2, "two", dept, 100, 7, 5),
+      new Employee<>(3, "three", dept, 100, 2, 5)
     );
     Collections.sort(employees);
     assertEquals(7, employees.get(0).getYearsOfExperience());

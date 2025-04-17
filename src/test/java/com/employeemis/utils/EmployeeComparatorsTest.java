@@ -20,9 +20,9 @@ class EmployeeComparatorsTest {
   void setU() {
     Department<Integer> dept = new Department<>("HR");
     employees = new ArrayList<>(List.of(
-      new Employee<>(1, "e1", dept, 19, 4, 1.3),
-      new Employee<>(2, "e2", dept, 10, 7, 3.3),
-      new Employee<>(3, "e3", dept, 13, 2, 3.1)
+      new Employee<>(1, "first", dept, 19, 4, 1.3),
+      new Employee<>(2, "second", dept, 10, 7, 3.3),
+      new Employee<>(3, "third", dept, 13, 2, 3.1)
     ));
   }
 
