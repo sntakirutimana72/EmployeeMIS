@@ -17,13 +17,13 @@ public class User extends ActivableEntity {
     setUsername(username);
     setPassword(password);
     setIsActive(true);
-    setPermissions(new Permission("Tenant", "all"));
+    addPermissions(new Permission("Tenant", "employee"));
 
     this.permissions = new HashSet<>();
     this.employeeID = employeeID;
   }
 
-  public void setPermissions(Permission ... permissions) {
+  public void addPermissions(Permission ... permissions) {
     this.permissions.addAll(Arrays.stream(permissions).toList());
   }
 

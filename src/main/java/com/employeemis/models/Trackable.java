@@ -4,7 +4,7 @@ import java.time.LocalDate;
 
 public interface Trackable {
   // Get Unique ID
-  int getID();
+  int getId();
 
   // Creation date
   LocalDate getCreatedAt();

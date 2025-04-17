@@ -20,7 +20,7 @@ public abstract class Entity implements Trackable {
   }
 
   @Override
-  public int getID() {
+  public int getId() {
     return id;
   }
 

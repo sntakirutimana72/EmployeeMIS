@@ -1,7 +1,6 @@
 package com.employeemis.models;
 
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 public class Department extends Entity {

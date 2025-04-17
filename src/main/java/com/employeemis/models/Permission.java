@@ -18,15 +18,19 @@ public class Permission extends Entity {
     this.actions = new HashSet<>();
 
     setName(name);
-    setActions(actions);
+    addActions(actions);
   }
 
   public void setName(String name) {
     this.name = name;
   }
 
-  public void setActions(PermissionActions ... actions) {
+  public void addActions(PermissionActions ... actions) {
     this.actions.addAll(Arrays.stream(actions).toList());
+  }
+
+  public void removeAction(PermissionActions action) {
+    actions.remove(action);
   }
 
   public String getName() {

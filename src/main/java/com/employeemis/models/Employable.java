@@ -6,7 +6,7 @@ public interface Employable {
   void setName(String name);
 
   // Get & set department under which employee is allocated
-  String getDepartment();
+  Department getDepartment();
   void setDepartment(Department department);
 
   // Get & set employee salary

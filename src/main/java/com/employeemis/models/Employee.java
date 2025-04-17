@@ -1,5 +1,7 @@
 package com.employeemis.models;
 
+import java.util.Objects;
+
 public class Employee extends ActivableEntity implements Employable {
   // Contracted from Employable interface
   private String name;
@@ -11,7 +13,7 @@ public class Employee extends ActivableEntity implements Employable {
   public Employee(String name, Department department, double salary, int yearsOfExperience, double performanceRate) {
     super();
     setName(name);
-    setDepartment(department);
+    assignDepartment(department);
     setSalary(salary);
     setYearsOfExperience(yearsOfExperience);
     setPerformanceRate(performanceRate);
@@ -23,15 +25,18 @@ public class Employee extends ActivableEntity implements Employable {
     this.name = name;
   }
 
+  private void assignDepartment(Department department) {
+    this.department = department;
+    department.addEmployee(this);
+  }
+
   @Override
   public void setDepartment(Department department) {
     if (this.department == department)
       return;
-    Department previousDepartment = this.department;
-    this.department = department;
-
-    previousDepartment.removeEmployee(this);
-    department.addEmployee(this);
+    Department previous = this.department;
+    assignDepartment(department);
+    previous.removeEmployee(this);
   }
 
   @Override
@@ -55,8 +60,8 @@ public class Employee extends ActivableEntity implements Employable {
   }
 
   @Override
-  public String getDepartment() {
-    return department.getName();
+  public Department getDepartment() {
+    return department;
   }
 
   @Override

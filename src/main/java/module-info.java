@@ -8,7 +8,6 @@ module com.employeemis {
     requires net.synedra.validatorfx;
     requires org.kordamp.ikonli.javafx;
     requires org.kordamp.bootstrapfx.core;
-    requires eu.hansolo.tilesfx;
 
     opens com.employeemis to javafx.fxml;
     exports com.employeemis;
