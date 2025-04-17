@@ -29,6 +29,13 @@ public class Employee<T> extends ActivableEntity<T> implements Employable<T> {
   }
 
   @Override
+  public double giveSalaryRaise() {
+    if (getPerformanceRate() >= 4.5)
+      setSalary(getSalary() * 1.3);
+    return getSalary();
+  }
+
+  @Override
   public void setDepartment(Department<T> department) {
     if (this.department == department)
       return;

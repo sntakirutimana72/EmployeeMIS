@@ -17,7 +17,7 @@ class EmployeeTest {
   @BeforeEach
   void setUp() {
     Department<Integer> department = new Department<>("IT");
-    employee = new Employee<>(1, "Test", department, 20.3, 0, 5);
+    employee = new Employee<>(1, "Test", department, 20.3, 0, 4);
   }
 
   @AfterEach
@@ -106,5 +106,20 @@ class EmployeeTest {
     assertEquals(7, employees.get(0).getYearsOfExperience());
     assertEquals(4, employees.get(1).getYearsOfExperience());
     assertEquals(2, employees.get(2).getYearsOfExperience());
+  }
+
+  @Test
+  @DisplayName("Should not give salary raise if performance rate < 4.5")
+  void shouldNotGiveSalaryRaise() {
+    double initialSalary = employee.getSalary();
+    assertEquals(initialSalary, employee.giveSalaryRaise());
+  }
+
+  @Test
+  @DisplayName("Should give salary raise if performance rate >= 4.5")
+  void shouldGiveSalaryRaise() {
+    double initialSalary = employee.getSalary();
+    employee.setPerformanceRate(4.6);
+    assertTrue(initialSalary < employee.giveSalaryRaise());
   }
 }

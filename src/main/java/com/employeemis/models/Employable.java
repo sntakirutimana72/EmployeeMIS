@@ -20,4 +20,7 @@ public interface Employable<T> extends Comparable<Employable<T>> {
   // Get & set employee performance rate
   double getPerformanceRate();
   void setPerformanceRate(double performanceRate);
+
+  // Give salary raise based on performance rate
+  double giveSalaryRaise();
 }
