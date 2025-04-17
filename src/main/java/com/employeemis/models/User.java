@@ -15,13 +15,14 @@ public class User extends ActivableEntity<Integer> {
 
   public User(String username, String password, int employeeID) {
     super(++autoIDCounter);
+
+    this.permissions = new HashSet<>();
+    this.employeeID = employeeID;
+
     setUsername(username);
     setPassword(password);
     setIsActive(true);
     addPermissions(new Permission("Tenant", "employee"));
-
-    this.permissions = new HashSet<>();
-    this.employeeID = employeeID;
   }
 
   public void addPermissions(Permission ... permissions) {

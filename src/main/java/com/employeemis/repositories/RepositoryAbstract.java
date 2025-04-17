@@ -20,12 +20,16 @@ public abstract class RepositoryAbstract<K, V extends Trackable<K>> implements R
     return entity;
   }
 
-  @Override
-  public void add(V entity) {
+  protected void enforceUniqueConstraint(V entity) throws IllegalArgumentException {
     K uid = entity.getId();
     if (repository.containsKey(uid))
       throw new IllegalArgumentException(
         String.format("%s with id=`%s` already exists", entity.getClass().getName(), uid));
+  }
+
+  @Override
+  public void add(V entity) {
+    enforceUniqueConstraint(entity);
     repository.put(entity.getId(), entity);
   }
 

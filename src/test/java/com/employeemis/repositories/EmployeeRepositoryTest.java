@@ -5,10 +5,9 @@ import com.employeemis.models.Employee;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.NoSuchElementException;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class EmployeeRepositoryTest {
   private EmployeeRepository<Integer> repository;
