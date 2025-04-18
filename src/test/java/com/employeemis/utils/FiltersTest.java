@@ -41,7 +41,7 @@ class FiltersTest {
     @Test
     void expectByDepartmentToReturnEmployeesInGivenDepartment() {
       assertTrue(
-        Filters.Employee.byDepartment(employees, "hr").stream()
+        Converters.toStream(Filters.Employee.byDepartment(employees, "hr"))
           .allMatch(e -> e.getDepartment().getName().equalsIgnoreCase("hr"))
       );
     }
@@ -51,7 +51,7 @@ class FiltersTest {
       employees.get(0).setName("stan");
       employees.get(1).setName("STEVE");
       assertTrue(
-        Filters.Employee.byName(employees, "st").stream()
+        Converters.toStream(Filters.Employee.byName(employees, "st"))
           .allMatch(e -> e.getName().toLowerCase().contains("st"))
       );
     }
@@ -61,7 +61,7 @@ class FiltersTest {
       employees.get(2).setPerformanceRate(3.2);
       employees.get(1).setPerformanceRate(3);
       assertTrue(
-        Filters.Employee.withPerformanceGreaterThanOrEqualTo(employees, 2.8).stream()
+        Converters.toStream(Filters.Employee.withPerformanceGreaterThanOrEqualTo(employees, 2.8))
           .allMatch(e -> e.getPerformanceRate() >= 2.8)
       );
     }
@@ -71,7 +71,7 @@ class FiltersTest {
       employees.get(2).setSalary(75);
       employees.get(1).setSalary(60);
       assertTrue(
-        Filters.Employee.bySalaryRange(employees, 27, 90).stream()
+        Converters.toStream(Filters.Employee.bySalaryRange(employees, 27, 90))
           .allMatch(e -> e.getSalary() >= 27 && e.getSalary() <= 90)
       );
     }
