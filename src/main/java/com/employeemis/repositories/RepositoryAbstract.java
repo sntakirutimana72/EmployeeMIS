@@ -44,22 +44,11 @@ public abstract class RepositoryAbstract<K, V extends Trackable<K>> implements R
     String setterName = "set" + attribute.substring(0, 1).toUpperCase() + attribute.substring(1);
 
     try {
-      Method setter = findSetter(entity.getClass(), setterName, value);
+      Method setter = com.employeemis.utils.Common.getClassMethod(entity.getClass(), setterName, value);
       setter.invoke(entity, value);
     } catch (Exception e) {
       throw new Exception(e.getMessage());
     }
-  }
-
-  private <T> Method findSetter(Class<?> clazz, String setterName, T value) throws NoSuchMethodException {
-    for (Method setter : clazz.getMethods()) {
-      if (setter.getName().equals(setterName)
-        && setter.getParameterCount() == 1
-        && setter.getParameterTypes()[0].isAssignableFrom(value.getClass())) {
-        return setter;
-      }
-    }
-    throw new NoSuchMethodException(String.format("No setter found for `%s`", setterName.substring(3)));
   }
 
   @Override

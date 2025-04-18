@@ -22,4 +22,11 @@ public class Validators {
         throw new IllegalArgumentException("Performance rate must vary between 0-5");
     }
   }
+
+  public static class Department {
+    public static void validateName(String name) throws IllegalArgumentException {
+      if (!name.matches("^[a-zA-Z0-9]{2,}((\\s|-|_)[a-zA-Z0-9]{2,})*$"))
+        throw new IllegalArgumentException("Department name value is invalid");
+    }
+  }
 }
