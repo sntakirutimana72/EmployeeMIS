@@ -39,10 +39,20 @@ class FiltersTest {
     }
 
     @Test
-    void expectGetAllByDepartmentToReturnOnlyEmployeeInGivenDepartment() {
+    void expectByDepartmentToReturnEmployeesInGivenDepartment() {
       assertTrue(
-        Filters.Employee.getAllByDepartment(employees, "hr").stream()
+        Filters.Employee.byDepartment(employees, "hr").stream()
           .allMatch(e -> e.getDepartment().getName().equalsIgnoreCase("hr"))
+      );
+    }
+
+    @Test
+    void expectByNameToReturnEmployeesWhoseNameContainsGivenPattern() {
+      employees.get(0).setName("stan");
+      employees.get(1).setName("STEVE");
+      assertTrue(
+        Filters.Employee.byName(employees, "st").stream()
+          .allMatch(e -> e.getName().toLowerCase().contains("st"))
       );
     }
   }
