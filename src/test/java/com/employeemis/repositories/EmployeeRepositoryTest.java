@@ -4,9 +4,11 @@ import com.employeemis.models.Department;
 import com.employeemis.models.Employee;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
 class EmployeeRepositoryTest {
@@ -76,5 +78,18 @@ class EmployeeRepositoryTest {
   void getAll() {
     repository.add(create(2));
     assertEquals(2, repository.getAll().size());
+  }
+
+  @Test
+  @DisplayName("Should sort by salary in descending order and get top 5")
+  void getTop5Paid() {
+    Department<Integer> dept = new Department<>("Customer care");
+    for (int i = 0; i < 6; i++)
+      repository.add(new Employee<>(i + 4, "first", dept, (7 + i) * 1.12, 4, 1.3));
+    List<Employee<Integer>> top5Paid = repository.getTop5Paid();
+    assertTrue(repository.getAll().size() > 5);
+    assertEquals(5, top5Paid.size());
+    assertTrue(top5Paid.get(0).getSalary() >= top5Paid.get(1).getSalary());
+    assertTrue(top5Paid.get(1).getSalary() >= top5Paid.get(4).getSalary());
   }
 }
