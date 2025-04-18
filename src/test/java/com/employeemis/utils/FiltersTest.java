@@ -65,5 +65,15 @@ class FiltersTest {
           .allMatch(e -> e.getPerformanceRate() >= 2.8)
       );
     }
+
+    @Test
+    void bySalaryRange() {
+      employees.get(2).setSalary(75);
+      employees.get(1).setSalary(60);
+      assertTrue(
+        Filters.Employee.bySalaryRange(employees, 27, 90).stream()
+          .allMatch(e -> e.getSalary() >= 27 && e.getSalary() <= 90)
+      );
+    }
   }
 }

@@ -21,5 +21,11 @@ public class Filters {
         .filter(e -> e.getPerformanceRate() >= rate)
         .toList();
     }
+
+    public static <K> List<com.employeemis.models.Employee<K>> bySalaryRange(List<com.employeemis.models.Employee<K>> employees, double min, double max) {
+      return employees.stream()
+        .filter(e -> e.getSalary() >= min && e.getSalary() <= max)
+        .toList();
+    }
   }
 }
