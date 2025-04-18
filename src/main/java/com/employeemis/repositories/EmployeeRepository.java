@@ -13,4 +13,13 @@ public class EmployeeRepository<K> extends RepositoryAbstract<K, Employee<K>> {
       .limit(5)
       .collect(Collectors.toList());
   }
+
+  public double getSalaryAverageByDepartment(String department) {
+    return getAll().stream()
+      .filter(e -> e.getDepartment().getName().equalsIgnoreCase(department))
+      .mapToDouble(Employee::getSalary)
+      .average()
+      .orElse(0.0); // default if no employee found
+  }
+
 }

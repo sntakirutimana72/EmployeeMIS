@@ -92,4 +92,22 @@ class EmployeeRepositoryTest {
     assertTrue(top5Paid.get(0).getSalary() >= top5Paid.get(1).getSalary());
     assertTrue(top5Paid.get(1).getSalary() >= top5Paid.get(4).getSalary());
   }
+
+  @Test
+  void expectGetSalaryAverageByDepartmentToReturnTheAverage() {
+    Department<Integer> dept = new Department<>("Customer care");
+    for (int i = 0; i < 3; i++)
+      repository.add(new Employee<>(i + 4, "avg", dept, 15, 4, 1.3));
+    assertEquals(15, repository.getSalaryAverageByDepartment("Customer care"));
+  }
+
+  @Test
+  void expectGetSalaryAverageByDepartmentToReturnZeroWhenNoSuchDeptExists() {
+    assertEquals(0, repository.getSalaryAverageByDepartment("Care"));
+  }
+
+  @Test
+  void expectGetSalaryAverageByDepartmentToIgnoreCase() {
+    assertEquals(23, repository.getSalaryAverageByDepartment("hr"));
+  }
 }
