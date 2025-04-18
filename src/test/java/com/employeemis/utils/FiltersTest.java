@@ -22,7 +22,7 @@ class FiltersTest {
     }
 
     private Employee<Integer> createEmployee(int id, Department<Integer> dept) {
-      return new Employee<>(id, "john", dept, 1, 2, 4);
+      return new Employee<>(id, "john", dept, 1, 2, 0);
     }
 
     @BeforeEach
@@ -53,6 +53,16 @@ class FiltersTest {
       assertTrue(
         Filters.Employee.byName(employees, "st").stream()
           .allMatch(e -> e.getName().toLowerCase().contains("st"))
+      );
+    }
+
+    @Test
+    void withPerformanceGreaterThanOrEqualTo() {
+      employees.get(2).setPerformanceRate(3.2);
+      employees.get(1).setPerformanceRate(3);
+      assertTrue(
+        Filters.Employee.withPerformanceGreaterThanOrEqualTo(employees, 2.8).stream()
+          .allMatch(e -> e.getPerformanceRate() >= 2.8)
       );
     }
   }

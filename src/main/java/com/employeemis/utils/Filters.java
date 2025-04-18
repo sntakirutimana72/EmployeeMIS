@@ -15,5 +15,11 @@ public class Filters {
         .filter(e -> e.getName().toLowerCase().contains(pattern.toLowerCase()))
         .toList();
     }
+
+    public static <K> List<com.employeemis.models.Employee<K>> withPerformanceGreaterThanOrEqualTo(List<com.employeemis.models.Employee<K>> employees, double rate) {
+      return employees.stream()
+        .filter(e -> e.getPerformanceRate() >= rate)
+        .toList();
+    }
   }
 }
