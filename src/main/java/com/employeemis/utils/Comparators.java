@@ -1,7 +1,5 @@
 package com.employeemis.utils;
 
-import com.employeemis.models.Employee;
-
 import java.util.Comparator;
 
 public class Comparators {
