@@ -4,6 +4,8 @@ import com.employeemis.cli.Helpers;
 import com.employeemis.cli.Main;
 import com.employeemis.models.Department;
 import com.employeemis.models.Employee;
+import com.employeemis.repositories.DepartmentRepository;
+import com.employeemis.repositories.EmployeeRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +19,15 @@ public class Employees extends Controller {
     Helpers.Printer.alert("Employees Menu");
     
     listOfEmployees = new ArrayList<>();
+  }
+  
+  @Override
+  public EmployeeRepository<Integer> getRepository() {
+    return getApp().getEmployeeRepository();
+  }
+
+  private DepartmentRepository<Integer> getDepartmentRepository() {
+    return getApp().getDepartmentRepository();
   }
 
   private void previewTable(String title) {
@@ -35,9 +46,9 @@ public class Employees extends Controller {
   private int createDepartment() throws Helpers.Errors.AbortException {
     while (true) {
       try {
-        String name = Helpers.Prompt.getText(getApp().getScanner(), "Enter department name:\n> ");
+        String name = Helpers.Prompt.getText(getScanner(), "Enter department name:\n> ");
         Department<Integer> department = new Department<>(name);
-        getApp().getDepartmentRepository().add(department);
+        getDepartmentRepository().add(department);
         return department.getId();
       } catch (IllegalArgumentException e) {
         System.out.println(e.getMessage());
@@ -47,8 +58,8 @@ public class Employees extends Controller {
 
   private void processList(int choice) {
     listOfEmployees = choice == 0 ?
-      getApp().getEmployeeRepository().getAll() :
-      getApp().getEmployeeRepository().getTop5Paid();
+      getRepository().getAll() :
+      getRepository().getTop5Paid();
     previewTable(choice == 0 ? "List of All Employees" : "List of Top 5 Paid Employees");
   }
 
@@ -58,31 +69,31 @@ public class Employees extends Controller {
       try {
         // Get employee ID
         int employeeId = Helpers.Prompt.getPositiveInt(
-          getApp().getScanner(), "Enter employee ID (must be a number):\n> ", 1);
+          getScanner(), "Enter employee ID (must be a number):\n> ", 1);
         // Get employee full name
-        String fullName = Helpers.Prompt.getText(getApp().getScanner(), "Enter employee name(s):\n> ");
+        String fullName = Helpers.Prompt.getText(getScanner(), "Enter employee name(s):\n> ");
         // Select department
-        List<Department<Integer>> listOfDepartments = getApp().getDepartmentRepository().getAll();
+        List<Department<Integer>> listOfDepartments = getDepartmentRepository().getAll();
         int departmentSelection = listOfDepartments.isEmpty() ?
           createDepartment() :
-          Helpers.Selectors.selectEntity("department", getApp().getScanner(), listOfDepartments);
+          Helpers.Selectors.selectEntity("department", getScanner(), listOfDepartments);
         // Get employee salary
-        double salary = Helpers.Prompt.getDouble(getApp().getScanner(), "Enter salary:\n> ");
+        double salary = Helpers.Prompt.getDouble(getScanner(), "Enter salary:\n> ");
         // Get employee years of experience
-        int yearsOfExperience = Helpers.Prompt.getPositiveInt(getApp().getScanner(), "Enter years of experience:\n> ", 0);
+        int yearsOfExperience = Helpers.Prompt.getPositiveInt(getScanner(), "Enter years of experience:\n> ", 0);
         // Get employee ID
-        double performance = Helpers.Prompt.getDouble(getApp().getScanner(), "Enter performance rate:\n> ");
+        double performance = Helpers.Prompt.getDouble(getScanner(), "Enter performance rate:\n> ");
 
         // Now, create employee record
         Employee<Integer> employee = new Employee<>(
           employeeId,
           fullName,
-          getApp().getDepartmentRepository().get(departmentSelection),
+          getDepartmentRepository().get(departmentSelection),
           salary,
           yearsOfExperience,
           performance
         );
-        getApp().getEmployeeRepository().add(employee);
+        getRepository().add(employee);
         Helpers.Printer.alert("Employee created successfully!!");
         return;
       } catch (IllegalArgumentException e) {
@@ -92,9 +103,9 @@ public class Employees extends Controller {
   }
 
   private void processUpdate() throws Helpers.Errors.AbortException {
-    List<Employee<Integer>> employees = getApp().getEmployeeRepository().getAll();
+    List<Employee<Integer>> employees = getRepository().getAll();
     Helpers.Errors.cannotBeEmpty("employee", employees.isEmpty());
-    int empSelection = Helpers.Selectors.selectEntity("employee", getApp().getScanner(), employees);
+    int empSelection = Helpers.Selectors.selectEntity("employee", getScanner(), employees);
 
     while (true) {
       try {
@@ -102,44 +113,44 @@ public class Employees extends Controller {
           List.of("name", "department", "salary", "yearsOfExperience", "performanceRate"));
         // Get field name to be updated
         int selectedAttrib = Helpers.Selectors.select(
-          "Select field to be updated:", getApp().getScanner(), fields);
+          "Select field to be updated:", getScanner(), fields);
         // Query selected employee
-        Employee<Integer> selectedEmployee = getApp().getEmployeeRepository().get(empSelection);
+        Employee<Integer> selectedEmployee = getRepository().get(empSelection);
 
         switch (fields.get(selectedAttrib)) {
           // This deals with department updates
           case "department" -> {
-            List<Department<Integer>> listOfDepartments = getApp().getDepartmentRepository().getAll();
+            List<Department<Integer>> listOfDepartments = getDepartmentRepository().getAll();
             Helpers.Errors.cannotBeEmpty("department", listOfDepartments.isEmpty());
             int deptSelection = Helpers.Selectors.selectEntity(
-              "department: ", getApp().getScanner(), listOfDepartments);
-            Department<Integer> selectedDepartment = getApp().getDepartmentRepository().get(deptSelection);
+              "department: ", getScanner(), listOfDepartments);
+            Department<Integer> selectedDepartment = getDepartmentRepository().get(deptSelection);
             // If selected department is the same as the current one, abort
             if (selectedDepartment.getId().equals(selectedEmployee.getDepartment().getId()))
               throw new IllegalArgumentException("You selected the same department");
-            getApp().getEmployeeRepository()
+            getRepository()
               .update(selectedEmployee.getId(), "department", selectedDepartment);
           }
 
           // This deals with name updates
           case "name" -> {
-            String name = Helpers.Prompt.getText(getApp().getScanner(), "Enter value of `name`:\n> ");
-            getApp().getEmployeeRepository().update(selectedEmployee.getId(), "name", name);
+            String name = Helpers.Prompt.getText(getScanner(), "Enter value of `name`:\n> ");
+            getRepository().update(selectedEmployee.getId(), "name", name);
           }
 
           // This block only deals with yearsOfExperience updates
           case "yearsOfExperience" -> {
             int yearsOfExperience = Helpers.Prompt
-              .getPositiveInt(getApp().getScanner(), "Enter value of `yearsOfExperience`:\n> ", 0);
-            getApp().getEmployeeRepository()
+              .getPositiveInt(getScanner(), "Enter value of `yearsOfExperience`:\n> ", 0);
+            getRepository()
               .update(selectedEmployee.getId(), "yearsOfExperience", yearsOfExperience);
           }
 
           // This section deals with performanceRate & salary updates
           default -> {
             double value = Helpers.Prompt
-              .getDouble(getApp().getScanner(), String.format("Enter value of `%s`:\n> ", fields.get(selectedAttrib)));
-            getApp().getEmployeeRepository()
+              .getDouble(getScanner(), String.format("Enter value of `%s`:\n> ", fields.get(selectedAttrib)));
+            getRepository()
               .update(selectedEmployee.getId(), fields.get(selectedAttrib), value);
           }
         }
@@ -152,12 +163,12 @@ public class Employees extends Controller {
   }
 
   private void processRemoval() throws Helpers.Errors.AbortException {
-    List<Employee<Integer>> employees = getApp().getEmployeeRepository().getAll();
+    List<Employee<Integer>> employees = getRepository().getAll();
     Helpers.Errors.cannotBeEmpty("employee", employees.isEmpty());
 
-    int selection = Helpers.Selectors.selectEntity("employee", getApp().getScanner(), employees);
+    int selection = Helpers.Selectors.selectEntity("employee", getScanner(), employees);
 
-    getApp().getEmployeeRepository().remove(selection);
+    getRepository().remove(selection);
     Helpers.Printer.alert(String.format("Employee no~(%s) was successfully deleted!!", selection));
   }
 
@@ -170,11 +181,11 @@ public class Employees extends Controller {
   }
 
   private void processShowSalaryAverage() throws Helpers.Errors.AbortException {
-    List<Department<Integer>> departments = getApp().getDepartmentRepository().getAll();
+    List<Department<Integer>> departments = getDepartmentRepository().getAll();
     Helpers.Errors.cannotBeEmpty("department", departments.isEmpty());
-    int choice = Helpers.Selectors.selectEntity("department", getApp().getScanner(), departments);
-    String departmentName = getApp().getDepartmentRepository().get(choice).getName();
-    double average = getApp().getEmployeeRepository().getSalaryAverageByDepartment(departmentName);
+    int choice = Helpers.Selectors.selectEntity("department", getScanner(), departments);
+    String departmentName = getDepartmentRepository().get(choice).getName();
+    double average = getRepository().getSalaryAverageByDepartment(departmentName);
     Helpers.Printer.alert(String.format("Salary Average in %s department is $%f", departmentName, average));
   }
 
@@ -182,7 +193,7 @@ public class Employees extends Controller {
     //noinspection InfiniteLoopStatement
     while (true) {
       try {
-        int choice = Helpers.Selectors.select("Select option", getApp().getScanner(), new ArrayList<>(List.of(
+        int choice = Helpers.Selectors.select("Select option", getScanner(), new ArrayList<>(List.of(
           "List All Employees",
           "List Top 5 Paid Employees",
           "Show Employee Salary Average (By Department)",

@@ -12,4 +12,11 @@ public class DepartmentRepository<E> extends RepositoryAbstract<Integer, Departm
         throw new IllegalArgumentException(
           String.format("%s with name=`%s` already exists", dept.getClass().getName(), dept.getName()));
   }
+
+  @Override
+  public void remove(Integer key) {
+    if (!get(key).getEmployees().isEmpty())
+      throw new IllegalArgumentException("Cannot delete department with employees");
+    super.remove(key);
+  }
 }

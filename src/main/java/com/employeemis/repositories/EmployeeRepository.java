@@ -1,5 +1,6 @@
 package com.employeemis.repositories;
 
+import com.employeemis.models.Department;
 import com.employeemis.models.Employee;
 import com.employeemis.utils.Comparators;
 
@@ -19,5 +20,11 @@ public class EmployeeRepository<K> extends RepositoryAbstract<K, Employee<K>> {
       .mapToDouble(Employee::getSalary)
       .average()
       .orElse(0.0); // default if no employee found
+  }
+
+  @Override
+  public void remove(K key) {
+    get(key).setDepartment(null);
+    super.remove(key);
   }
 }

@@ -2,6 +2,7 @@ package com.employeemis.cli.controllers;
 
 import com.employeemis.cli.Helpers;
 import com.employeemis.cli.Main;
+import com.employeemis.repositories.UserRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +10,11 @@ import java.util.List;
 public class Users extends Controller {
   public Users(Main app) {
     super(app);
+  }
+
+  @Override
+  public UserRepository getRepository() {
+    return getApp().getUserRepository();
   }
 
   public void process() throws Helpers.Errors.AbortException {

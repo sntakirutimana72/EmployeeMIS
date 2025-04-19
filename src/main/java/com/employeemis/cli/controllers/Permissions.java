@@ -2,6 +2,7 @@ package com.employeemis.cli.controllers;
 
 import com.employeemis.cli.Helpers;
 import com.employeemis.cli.Main;
+import com.employeemis.repositories.PermissionRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +10,11 @@ import java.util.List;
 public class Permissions extends Controller {
   public Permissions(Main app) {
     super(app);
+  }
+
+  @Override
+  public PermissionRepository getRepository() {
+    return getApp().getPermissionRepository();
   }
 
   public void process() throws Helpers.Errors.AbortException {

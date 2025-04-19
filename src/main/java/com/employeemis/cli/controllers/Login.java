@@ -2,12 +2,18 @@ package com.employeemis.cli.controllers;
 
 import com.employeemis.cli.Helpers;
 import com.employeemis.cli.Main;
+import com.employeemis.repositories.UserRepository;
 
 public class Login extends Controller {
 
   public Login(Main app) {
     super(app);
     Helpers.Printer.alert("Login Form");
+  }
+
+  @Override
+  public UserRepository getRepository() {
+    return null;
   }
 
   public int post() throws Helpers.Errors.AbortException {

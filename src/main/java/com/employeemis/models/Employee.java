@@ -29,9 +29,9 @@ public class Employee<T> extends ActivableEntity<T> implements Employable<T> {
   }
 
   private void assignDepartment(Department<T> department) {
+    this.department = department;
     if (Objects.isNull(department))
       return;
-    this.department = department;
     department.addEmployee(this);
   }
 

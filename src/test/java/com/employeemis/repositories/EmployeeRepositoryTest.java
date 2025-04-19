@@ -54,8 +54,14 @@ class EmployeeRepositoryTest {
 
   @Test
   void expectRemoveToDeleteExistingEmployee() {
+    Employee<Integer> empToBeDeleted = repository.get(1);
+    Department<Integer> assignedDept = empToBeDeleted.getDepartment();
+
+    assertTrue(assignedDept.getEmployees().stream().anyMatch(empToBeDeleted::equals));
     repository.remove(1);
     assertThrows(NoSuchElementException.class, () -> repository.get(1));
+    assertTrue(assignedDept.getEmployees().stream().noneMatch(empToBeDeleted::equals));
+    assertNull(empToBeDeleted.getDepartment());
   }
 
   @Test
