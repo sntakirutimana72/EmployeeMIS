@@ -1,10 +1,6 @@
 package com.employeemis.models;
 
-public interface Employable<T> extends Comparable<Employable<T>> {
-  // Get & set employee name
-  String getName();
-  void setName(String name) throws IllegalArgumentException;
-
+public interface Employable<T> extends Comparable<Employable<T>>, Nameable {
   // Get & set department under which employee is allocated
   Department<T> getDepartment();
   void setDepartment(Department<T> department);

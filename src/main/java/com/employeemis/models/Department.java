@@ -3,7 +3,7 @@ package com.employeemis.models;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Department<T> extends Entity<Integer> {
+public class Department<T> extends Entity<Integer> implements Nameable {
   private static int autoIDCounter = 0;
   private String name;
   private final Set<Employee<T>> employees;
@@ -28,10 +28,12 @@ public class Department<T> extends Entity<Integer> {
     return employees;
   }
 
+  @Override
   public void setName(String name) {
     this.name = name;
   }
 
+  @Override
   public String getName() {
     return name;
   }

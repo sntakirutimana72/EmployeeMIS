@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Permission extends Entity<Integer> {
+public class Permission extends Entity<Integer> implements Nameable {
   private static int autoIDCounter = 0;
   private String name;
   private final String resource;
@@ -23,6 +23,7 @@ public class Permission extends Entity<Integer> {
     addActions(actions);
   }
 
+  @Override
   public void setName(String name) {
     this.name = name;
   }
@@ -35,6 +36,7 @@ public class Permission extends Entity<Integer> {
     actions.remove(action);
   }
 
+  @Override
   public String getName() {
     return name;
   }

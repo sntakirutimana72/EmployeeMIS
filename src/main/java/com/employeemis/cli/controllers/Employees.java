@@ -9,13 +9,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-public class Employees extends Protected {
+public class Employees extends Controller {
+  private List<Employee<Integer>> listOfEmployees;
+  
   public Employees(Main app) {
     super(app);
-    Helpers.Printer.important("Employees Menu");
+    Helpers.Printer.alert("Employees Menu");
+    
+    listOfEmployees = new ArrayList<>();
   }
 
-  private void previewTable(String title, List<Employee<Integer>> employees) {
+  private void previewTable(String title) {
     List<String> columns = new ArrayList<>(List.of("ID", "Name", "Department", "Salary", "Years of Experience", "Performance Rate"));
     Function<Employee<Integer>, List<String>> getRow = (e) -> new ArrayList<>(List.of(
       String.valueOf(e.getId()),
@@ -25,271 +29,181 @@ public class Employees extends Protected {
       String.valueOf(e.getYearsOfExperience()),
       String.valueOf(e.getPerformanceRate())
     ));
-    Helpers.Printer.tabular(title, columns, employees.stream().map(getRow).toList());
+    Helpers.Printer.tabular(title, columns, listOfEmployees.stream().map(getRow).toList());
   }
 
-  private String createDepartment() {
+  private int createDepartment() throws Helpers.Errors.AbortException {
     while (true) {
       try {
-        System.out.println("Enter department name:");
-        String name = Helpers.Prompter.get(getApp().getScanner());
-        if (name.equals("..."))
-          return name;
-
+        String name = Helpers.Prompt.getText(getApp().getScanner(), "Enter department name:\n> ");
         Department<Integer> department = new Department<>(name);
         getApp().getDepartmentRepository().add(department);
-        return String.valueOf(department.getId());
-      } catch (Exception e) {
+        return department.getId();
+      } catch (IllegalArgumentException e) {
         System.out.println(e.getMessage());
       }
     }
   }
 
   private void processList(int choice) {
-    List<Employee<Integer>> employees = choice == 1 ?
+    listOfEmployees = choice == 0 ?
       getApp().getEmployeeRepository().getAll() :
       getApp().getEmployeeRepository().getTop5Paid();
-    previewTable(choice == 1 ? "List of All Employees" : "List of Top 5 Paid Employees", employees);
+    previewTable(choice == 0 ? "List of All Employees" : "List of Top 5 Paid Employees");
   }
 
-  private void processCreate() {
-    Helpers.Printer.important("CREATE EMPLOYEE RECORD");
+  private void processCreate() throws Helpers.Errors.AbortException {
+    Helpers.Printer.alert("Create New Employee");
     while (true) {
       try {
         // Get employee ID
-        System.out.println("Enter employee ID (must be a number): ");
-        String employeeId = Helpers.Prompter.getNumber(getApp().getScanner());
-        // Enforce going back
-        if (employeeId.equals("..."))
-          return;
-
+        int employeeId = Helpers.Prompt.getPositiveInt(
+          getApp().getScanner(), "Enter employee ID (must be a number):\n> ", 1);
         // Get employee full name
-        System.out.println("Enter employee name(s): ");
-        String fullName = Helpers.Prompter.get(getApp().getScanner());
-        // Enforce going back
-        if (fullName.equals("..."))
-          return;
-
+        String fullName = Helpers.Prompt.getText(getApp().getScanner(), "Enter employee name(s):\n> ");
         // Select department
         List<Department<Integer>> listOfDepartments = getApp().getDepartmentRepository().getAll();
-        String departmentSelection;
-        int selectedDepartmentID;
-        // If none available, create one
-        if (listOfDepartments.isEmpty()) {
-          departmentSelection = createDepartment();
-          if (departmentSelection.equals("..."))
-            return;
-          selectedDepartmentID = Integer.parseInt(departmentSelection);
-        }
-        // If available, select one
-        else {
-          departmentSelection = Helpers.select(
-            "Select department: ", getApp().getScanner(),
-            listOfDepartments.stream().map(Department::getName).toList());
-          // Enforce going back
-          if (departmentSelection.equals("..."))
-            return;
-          selectedDepartmentID = listOfDepartments.get(Integer.parseInt(departmentSelection) - 1).getId();
-        }
-
+        int departmentSelection = listOfDepartments.isEmpty() ?
+          createDepartment() :
+          Helpers.Selectors.selectEntity("department", getApp().getScanner(), listOfDepartments);
         // Get employee salary
-        System.out.println("Enter salary: ");
-        String salary = Helpers.Prompter.getNumber(getApp().getScanner());
-        // Enforce going back
-        if (salary.equals("..."))
-          return;
-
+        double salary = Helpers.Prompt.getDouble(getApp().getScanner(), "Enter salary:\n> ");
         // Get employee years of experience
-        System.out.println("Enter years of experience: ");
-        String yearsOfExperience = Helpers.Prompter.getNumber(getApp().getScanner());
-        // Enforce going back
-        if (yearsOfExperience.equals("..."))
-          return;
-
+        int yearsOfExperience = Helpers.Prompt.getPositiveInt(getApp().getScanner(), "Enter years of experience:\n> ", 0);
         // Get employee ID
-        System.out.println("Enter performance rate: ");
-        String performance = Helpers.Prompter.getNumber(getApp().getScanner());
-        // Enforce going back
-        if (performance.equals("..."))
-          return;
+        double performance = Helpers.Prompt.getDouble(getApp().getScanner(), "Enter performance rate:\n> ");
 
         // Now, create employee record
         Employee<Integer> employee = new Employee<>(
-          Integer.parseInt(employeeId),
+          employeeId,
           fullName,
-          getApp().getDepartmentRepository().get(selectedDepartmentID),
-          Double.parseDouble(salary),
-          Integer.parseInt(yearsOfExperience),
-          Double.parseDouble(performance)
+          getApp().getDepartmentRepository().get(departmentSelection),
+          salary,
+          yearsOfExperience,
+          performance
         );
         getApp().getEmployeeRepository().add(employee);
-        Helpers.Printer.important("Employee created successfully!!");
+        Helpers.Printer.alert("Employee created successfully!!");
         return;
-      } catch (Exception e) {
-        Helpers.Printer.important(e.getMessage());
+      } catch (IllegalArgumentException e) {
+        Helpers.Printer.alert(e.getMessage());
       }
     }
   }
 
-  private void processUpdate() {
+  private void processUpdate() throws Helpers.Errors.AbortException {
     List<Employee<Integer>> employees = getApp().getEmployeeRepository().getAll();
-    String selection = Helpers.select(
-      "Select employee to update: ",
-      getApp().getScanner(),
-      employees.stream()
-        .map(e -> String.format("%s (ID-%s)", e.getName(), e.getId()))
-        .toList());
-    if (selection.equals("..."))
-      return;
+    Helpers.Errors.cannotBeEmpty("employee", employees.isEmpty());
+    int empSelection = Helpers.Selectors.selectEntity("employee", getApp().getScanner(), employees);
 
     while (true) {
       try {
         List<String> fields = new ArrayList<>(
           List.of("name", "department", "salary", "yearsOfExperience", "performanceRate"));
         // Get field name to be updated
-        String attribute = Helpers.select("Select field to be updated: ", getApp().getScanner(), fields);
-        if (attribute.equals("..."))
-          return;
-
-        // Parse selected attribute to integer
-        int selectedAttribute = Integer.parseInt(attribute) - 1;
+        int selectedAttrib = Helpers.Selectors.select(
+          "Select field to be updated:", getApp().getScanner(), fields);
         // Query selected employee
-        Employee<Integer> selectedEmployee = employees.get(Integer.parseInt(selection) - 1);
+        Employee<Integer> selectedEmployee = getApp().getEmployeeRepository().get(empSelection);
 
-        switch (fields.get(selectedAttribute)) {
+        switch (fields.get(selectedAttrib)) {
           // This deals with department updates
           case "department" -> {
             List<Department<Integer>> listOfDepartments = getApp().getDepartmentRepository().getAll();
-            String value = Helpers.select(
-              "Select department: ", getApp().getScanner(),
-              listOfDepartments.stream()
-                .map(d ->
-                  d.getId().equals(selectedEmployee.getDepartment().getId()) ?
-                    d.getName() + " (*)" :
-                    d.getName()
-                ).toList());
-            if (value.equals("..."))
-              return;
-
-            Department<Integer> selectedDepartment = listOfDepartments.get(Integer.parseInt(value) - 1);
-            // New department is the same as the selected one, abort
+            Helpers.Errors.cannotBeEmpty("department", listOfDepartments.isEmpty());
+            int deptSelection = Helpers.Selectors.selectEntity(
+              "department: ", getApp().getScanner(), listOfDepartments);
+            Department<Integer> selectedDepartment = getApp().getDepartmentRepository().get(deptSelection);
+            // If selected department is the same as the current one, abort
             if (selectedDepartment.getId().equals(selectedEmployee.getDepartment().getId()))
               throw new IllegalArgumentException("You selected the same department");
-            getApp().getEmployeeRepository().update(selectedEmployee.getId(), "department", selectedDepartment);
+            getApp().getEmployeeRepository()
+              .update(selectedEmployee.getId(), "department", selectedDepartment);
           }
 
           // This deals with name updates
           case "name" -> {
-            System.out.println("Enter value of `name`:");
-            String name = Helpers.Prompter.get(getApp().getScanner());
-            if (name.equals("..."))
-              return;
+            String name = Helpers.Prompt.getText(getApp().getScanner(), "Enter value of `name`:\n> ");
             getApp().getEmployeeRepository().update(selectedEmployee.getId(), "name", name);
           }
 
           // This block only deals with yearsOfExperience updates
           case "yearsOfExperience" -> {
-            System.out.println("Enter value of `yearsOfExperience`:");
-            String yearsOfExperience = Helpers.Prompter.getNumber(getApp().getScanner());
-            if (yearsOfExperience.equals("..."))
-              return;
+            int yearsOfExperience = Helpers.Prompt
+              .getPositiveInt(getApp().getScanner(), "Enter value of `yearsOfExperience`:\n> ", 0);
             getApp().getEmployeeRepository()
-              .update(selectedEmployee.getId(), "yearsOfExperience", Integer.parseInt(yearsOfExperience));
+              .update(selectedEmployee.getId(), "yearsOfExperience", yearsOfExperience);
           }
 
           // This section deals with performanceRate & salary updates
           default -> {
-            System.out.printf("Enter value of `%s`:%n", fields.get(selectedAttribute));
-            String value = Helpers.Prompter.getNumber(getApp().getScanner());
-            if (value.equals("..."))
-              return;
+            double value = Helpers.Prompt
+              .getDouble(getApp().getScanner(), String.format("Enter value of `%s`:\n> ", fields.get(selectedAttrib)));
             getApp().getEmployeeRepository()
-              .update(selectedEmployee.getId(), fields.get(selectedAttribute), Double.parseDouble(value));
+              .update(selectedEmployee.getId(), fields.get(selectedAttrib), value);
           }
         }
-        Helpers.Printer.important(String.format("Employee no~(%s) was successfully updated!!", selection));
+        Helpers.Printer.alert(String.format("Employee no~(%s) was successfully updated!!", empSelection));
         return;
-      } catch (Exception e) {
-        Helpers.Printer.important(e.getMessage());
+      } catch (IllegalArgumentException e) {
+        Helpers.Printer.alert(e.getMessage());
       }
     }
   }
 
-  private void processRemoval() {
+  private void processRemoval() throws Helpers.Errors.AbortException {
     List<Employee<Integer>> employees = getApp().getEmployeeRepository().getAll();
-    String selection = Helpers.select(
-      "Select employee to delete: ",
-      getApp().getScanner(),
-      employees.stream()
-        .map(e -> String.format("%s (ID-%s)", e.getName(), e.getId()))
-        .toList()
-    );
-    if (selection.equals("..."))
-      return;
+    Helpers.Errors.cannotBeEmpty("employee", employees.isEmpty());
 
-    getApp().getEmployeeRepository()
-      .remove(employees.get(Integer.parseInt(selection) - 1).getId());
-    Helpers.Printer.important(String.format("Employee no~(%s) was successfully deleted!!", selection));
+    int selection = Helpers.Selectors.selectEntity("employee", getApp().getScanner(), employees);
+
+    getApp().getEmployeeRepository().remove(selection);
+    Helpers.Printer.alert(String.format("Employee no~(%s) was successfully deleted!!", selection));
   }
 
-  private void processCRUD(int choice) {
+  private void processCRUD(int choice) throws Helpers.Errors.AbortException {
     switch (choice) {
-      case 4:
-        processCreate();
-        break;
-      case 5:
-        processUpdate();
-        break;
-      default:
-        processRemoval();
+      case 3 -> processCreate();
+      case 4 -> processUpdate();
+      default -> processRemoval();
     }
   }
 
-  private void processReports(int choice) {}
-
-  private void processFiltering(int choice) {}
-
-  private void processSorting(int choice) {
+  private void processShowSalaryAverage() throws Helpers.Errors.AbortException {
+    List<Department<Integer>> departments = getApp().getDepartmentRepository().getAll();
+    Helpers.Errors.cannotBeEmpty("department", departments.isEmpty());
+    int choice = Helpers.Selectors.selectEntity("department", getApp().getScanner(), departments);
+    String departmentName = getApp().getDepartmentRepository().get(choice).getName();
+    double average = getApp().getEmployeeRepository().getSalaryAverageByDepartment(departmentName);
+    Helpers.Printer.alert(String.format("Salary Average in %s department is $%f", departmentName, average));
   }
 
-  private void dispatchSelection(int selection) {
-    if (selection < 3)
-      processList(selection);
-    else if (selection < 4)
-      processReports(selection);
-    else if (selection < 7)
-      processCRUD(selection);
-    else if (selection < 11)
-      processFiltering(selection);
-    else
-      processSorting(selection);
-  }
-
-  @Override
-  public void process() throws IllegalAccessException {
-    super.process();
+  public void process() throws Helpers.Errors.AbortException {
+    //noinspection InfiniteLoopStatement
     while (true) {
-      String choice = Helpers.select("Select: ", getApp().getScanner(), new ArrayList<>(List.of(
-        "List All Employees",
-        "List Top 5 Paid Employees",
-        "Show Employee Salary Average (By Department)",
-        "Create Employee",
-        "Update Employee",
-        "Delete Employee",
-        "Filter (By Department)",
-        "Filter (By Name)",
-        "Filter (By Salary Range ~ 500-670)",
-        "Filter (By Performance >= x)",
-        "Sort (By Salary - DESC)",
-        "Sort (By Years of Experience - DESC)",
-        "Sort (By Performance Rate - DESC)"
-      )));
-
-      if (choice.equals("...")) {
-        getApp().backward("...");
-        break;
+      try {
+        int choice = Helpers.Selectors.select("Select option", getApp().getScanner(), new ArrayList<>(List.of(
+          "List All Employees",
+          "List Top 5 Paid Employees",
+          "Show Employee Salary Average (By Department)",
+          "Create Employee",
+          "Update Employee",
+          "Delete Employee"
+        )));
+        switch (choice) {
+          case 0:
+          case 1:
+            processList(choice);
+            break;
+          case 2:
+            processShowSalaryAverage();
+            break;
+          default:
+            processCRUD(choice);
+        }
+      } catch (IllegalArgumentException e) {
+        Helpers.Printer.alert(e.getMessage());
       }
-      dispatchSelection(Integer.parseInt(choice));
     }
   }
 }

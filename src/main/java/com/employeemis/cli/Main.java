@@ -5,10 +5,13 @@ import com.employeemis.repositories.EmployeeRepository;
 import com.employeemis.repositories.PermissionRepository;
 import com.employeemis.repositories.UserRepository;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import java.util.Scanner;
 
-public class Main extends Navigator {
-  private boolean loggedIn;
+public class Main {
+  private Integer sessionId;
   private final Scanner scanner;
   private final UserRepository userRepository;
   private final EmployeeRepository<Integer> employeeRepository;
@@ -24,13 +27,11 @@ public class Main extends Navigator {
     permissionRepository = new PermissionRepository();
     scanner = new Scanner(System.in);
 
-    // On startup, system must push default route by default
-    forward("");
-    Helpers.Printer.important("Welcome To Employee Management System");
+    Helpers.Printer.alert("Welcome To Employee Management System");
   }
 
   public boolean isLoggedIn() {
-    return loggedIn;
+    return !Objects.isNull(sessionId);
   }
 
   public PermissionRepository getPermissionRepository() {
@@ -56,30 +57,32 @@ public class Main extends Navigator {
   public void run() {
     //noinspection InfiniteLoopStatement
     while (true) {
+      int choice;
       try {
-        switch (current()) {
-          case "/login":
-            new com.employeemis.cli.controllers.Login(this).process();
-            break;
-          case "/dashboard":
-            new com.employeemis.cli.controllers.Dashboard(this).process();
-            break;
-          case "/employees":
-            new com.employeemis.cli.controllers.Employees(this).process();
-            break;
-          case "/users":
-            new com.employeemis.cli.controllers.Users(this).process();
-            break;
-          case "/loggedIn":
-            loggedIn = true;
-            replace("dashboard");
-            break;
-          default:
-            new com.employeemis.cli.controllers.Index(this).process();
+        if (isLoggedIn()) {
+          choice = Helpers.Selectors.select(
+            "*** Select option ***", getScanner(), new ArrayList<>(
+              List.of("Users", "Employees", "Departments", "Permissions", "Logout", "Exit")
+            )
+          );
+          switch (choice) {
+            case 0 -> new com.employeemis.cli.controllers.Users(this).process();
+            case 1 -> new com.employeemis.cli.controllers.Employees(this).process();
+            case 2 -> new com.employeemis.cli.controllers.Departments(this).process();
+            case 3 -> new com.employeemis.cli.controllers.Permissions(this).process();
+            case 4 -> sessionId = null;
+            case 5 -> Helpers.Policies.exist("exit");
+          }
+        } else {
+          choice = Helpers.Selectors.select(
+            "*** Select option ***", getScanner(), new ArrayList<>(List.of("Login", "Exit")));
+          if (choice == 0)
+            sessionId = new com.employeemis.cli.controllers.Login(this).post();
+          else
+            Helpers.Policies.exist("exit");
         }
       } catch (Exception e) {
-        Helpers.Printer.important(e.getMessage());
-        replace(isLoggedIn() ? "dashboard" : "");
+        Helpers.Printer.alert(Objects.isNull(e.getMessage()) ? "" : e.getMessage());
       }
     }
   }

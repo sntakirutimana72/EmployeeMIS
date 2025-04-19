@@ -3,26 +3,21 @@ package com.employeemis.cli.controllers;
 import com.employeemis.cli.Helpers;
 import com.employeemis.cli.Main;
 
-public class Login extends Public {
+public class Login extends Controller {
+
   public Login(Main app) {
     super(app);
+    Helpers.Printer.alert("Login Form");
   }
 
-  @Override
-  public void process() throws IllegalAccessException {
-    super.process();
-    Helpers.Printer.important("Login Form");
+  public int post() throws Helpers.Errors.AbortException {
     while (true) {
-      System.out.println("Enter username:");
-      String username = Helpers.Prompter.get(getApp().getScanner());
-      System.out.println("Enter password:");
-      String password = Helpers.Prompter.get(getApp().getScanner());
+      String username = Helpers.Prompt.getText(getApp().getScanner(), "Enter username:\n> ");
+      String password = Helpers.Prompt.getText(getApp().getScanner(), "Enter password:\n> ");
 
-      if (username.equalsIgnoreCase("testUser") && password.equals("pass@123")) {
-        getApp().replace("loggedIn");
-        return;
-      }
-      Helpers.Printer.important("Authentication Failed");
+      if (username.equalsIgnoreCase("testUser") && password.equals("pass@123"))
+        return 1;
+      Helpers.Printer.alert("Authentication Failed");
     }
   }
 }

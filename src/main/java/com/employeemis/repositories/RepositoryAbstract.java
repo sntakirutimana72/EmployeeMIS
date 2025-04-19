@@ -39,7 +39,7 @@ public abstract class RepositoryAbstract<K, V extends Trackable<K>> implements R
   }
 
   @Override
-  public <T> void update(K key, String attribute, T value) throws Exception {
+  public <T> void update(K key, String attribute, T value) throws IllegalArgumentException {
     V entity = this.get(key);
     String setterName = "set" + attribute.substring(0, 1).toUpperCase() + attribute.substring(1);
 
@@ -47,7 +47,7 @@ public abstract class RepositoryAbstract<K, V extends Trackable<K>> implements R
       Method setter = com.employeemis.utils.Common.getClassMethod(entity.getClass(), setterName, value);
       setter.invoke(entity, value);
     } catch (Exception e) {
-      throw new Exception(e.getMessage());
+      throw new IllegalArgumentException(e.getMessage());
     }
   }
 

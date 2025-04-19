@@ -6,19 +6,19 @@ import com.employeemis.cli.Main;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Users extends Controller {
-  public Users(Main app) {
+public class Permissions extends Controller {
+  public Permissions(Main app) {
     super(app);
   }
 
   public void process() throws Helpers.Errors.AbortException {
-    Helpers.Printer.alert("User Menu");
+    Helpers.Printer.alert("Permission Menu");
 
     int choice = Helpers.Selectors.select("*** Select options ***", getApp().getScanner(), new ArrayList<>(List.of(
-      "List All Users",
-      "Create User",
-      "Update User",
-      "Change password"
+      "List All Permissions",
+      "Create Permission",
+      "Update Permission",
+      "Delete Permission"
     )));
   }
 }
