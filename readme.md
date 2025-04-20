@@ -1,7 +1,7 @@
-<p style="text-align: center;">
+<p align="center">
   <img width="160" style="border-radius: 50%;" src="docs/logo.jpg" alt="logo"/>
 </p>
-<h3 style="text-align: center;">EMPLOYEE MANAGEMENT SYSTEM</h3>
+<h3 align="center">EMPLOYEE MANAGEMENT SYSTEM</h3>
 <hr>
 
 *Employee management system* offers simple operations to manage records, like, creating, updating, and deleting.
@@ -23,7 +23,7 @@ The system has both `cli` and `GUI` version.
 To ge this program running on your local environment, 
 1. First, install `Java 17.+`
 2. Install `Java FX` - `@latest`
-3. Clone the repository ([link](.../...))
+3. Clone the repository ([link](https://github.com/sntakirutimana72/EmployeeMIS))
 
 ## How does it work?
 Each application version `cli`/`GUI` has its own `entry point`.
@@ -116,7 +116,7 @@ This version doesn't require `authentication` to operate it. So, once fired up, 
 
 Contributions, issues, and feature requests are welcome!
 
-Feel free to check the [issues page](../../issues/)
+Feel free to check the [issues page](https://github.com/sntakirutimana72/EmployeeMIS/issues/)
 
 ## Show your support
 
