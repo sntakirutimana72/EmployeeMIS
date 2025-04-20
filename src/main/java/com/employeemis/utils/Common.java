@@ -15,20 +15,32 @@ public class Common {
     return wrapper;
   }
 
-  public static <T> Method getClassMethod(Class<?> clazz, String setterName, T value) throws NoSuchMethodException {
-    for (Method setter : clazz.getMethods()) {
-      if (setter.getName().equals(setterName) && setter.getParameterCount() == 1) {
-        Class<?> paramType = setter.getParameterTypes()[0];
+  public static <T> Method hasSetter(Class<?> clazz, String attrib, T value) throws NoSuchMethodException {
+    for (Method method : clazz.getMethods()) {
+      if (method.getName().equals("set" + attrib.substring(0, 1).toUpperCase() + attrib.substring(1)) && method.getParameterCount() == 1) {
+        Class<?> paramType = method.getParameterTypes()[0];
         if (paramType.isPrimitive()) {
           // Unbox the wrapper type to compare with primitive
           if (getPrimitiveType(value.getClass()) == paramType) {
-            return setter;
+            return method;
           }
         } else if (paramType.isAssignableFrom(value.getClass())) {
-          return setter;
+          return method;
         }
       }
     }
-    throw new NoSuchMethodException(String.format("No setter found for `%s`", setterName.substring(3)));
+    throw new NoSuchMethodException(String.format("%s has no setter for %s", clazz, attrib));
+  }
+
+  public static <T> Method hasGetter(Class<?> clazz, String attrib) throws NoSuchMethodException {
+    for (Method method : clazz.getMethods())
+      if (method.getName().equals("get" + attrib.substring(0, 1).toUpperCase() + attrib.substring(1)))
+        return method;
+    throw new NoSuchMethodException(String.format("%s has no getter for %s", clazz, attrib));
+  }
+
+  public static void raiseIfIllegal(boolean isIlLegal, String msg) throws IllegalArgumentException {
+    if (isIlLegal)
+      throw new IllegalArgumentException(msg);
   }
 }

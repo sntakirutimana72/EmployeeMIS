@@ -8,7 +8,7 @@ public class Login extends Controller {
 
   public Login(Main app) {
     super(app);
-    Helpers.Printer.alert("Login Form");
+    Helpers.Printer.alert("LoginController Form");
   }
 
   @Override

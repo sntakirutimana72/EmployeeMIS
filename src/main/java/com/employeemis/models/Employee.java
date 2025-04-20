@@ -1,6 +1,10 @@
 package com.employeemis.models;
 
 import com.employeemis.utils.Validators;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 
 import java.util.Objects;
 
@@ -85,14 +89,27 @@ public class Employee<T> extends ActivableEntity<T> implements Employable<T> {
     return salary;
   }
 
+  public DoubleProperty salaryProperty() {
+    return new SimpleDoubleProperty(getSalary());
+  }
+
   @Override
   public int getYearsOfExperience() {
     return yearsOfExperience;
   }
 
+  public IntegerProperty yearsOfExperienceProperty() {
+    return new SimpleIntegerProperty(getYearsOfExperience());
+  }
+
+
   @Override
   public double getPerformanceRate() {
     return performanceRate;
+  }
+
+  public DoubleProperty performanceRateProperty() {
+    return new SimpleDoubleProperty(getPerformanceRate());
   }
 
   @Override

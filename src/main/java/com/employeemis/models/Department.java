@@ -37,4 +37,9 @@ public class Department<T> extends Entity<Integer> implements Nameable {
   public String getName() {
     return name;
   }
+
+  @Override
+  public String toString() {
+    return getName();
+  }
 }
