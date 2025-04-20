@@ -46,9 +46,5 @@ public class ScreensManager {
       e.printStackTrace();
     }
   }
-
-  public Controller getController(String name) {
-    return controllers.get(name);
-  }
 }
 

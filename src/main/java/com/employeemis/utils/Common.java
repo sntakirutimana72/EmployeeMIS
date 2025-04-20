@@ -32,7 +32,7 @@ public class Common {
     throw new NoSuchMethodException(String.format("%s has no setter for %s", clazz, attrib));
   }
 
-  public static <T> Method hasGetter(Class<?> clazz, String attrib) throws NoSuchMethodException {
+  public static Method hasGetter(Class<?> clazz, String attrib) throws NoSuchMethodException {
     for (Method method : clazz.getMethods())
       if (method.getName().equals("get" + attrib.substring(0, 1).toUpperCase() + attrib.substring(1)))
         return method;

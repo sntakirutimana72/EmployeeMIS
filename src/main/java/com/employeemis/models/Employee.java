@@ -89,27 +89,14 @@ public class Employee<T> extends ActivableEntity<T> implements Employable<T> {
     return salary;
   }
 
-  public DoubleProperty salaryProperty() {
-    return new SimpleDoubleProperty(getSalary());
-  }
-
   @Override
   public int getYearsOfExperience() {
     return yearsOfExperience;
   }
 
-  public IntegerProperty yearsOfExperienceProperty() {
-    return new SimpleIntegerProperty(getYearsOfExperience());
-  }
-
-
   @Override
   public double getPerformanceRate() {
     return performanceRate;
-  }
-
-  public DoubleProperty performanceRateProperty() {
-    return new SimpleDoubleProperty(getPerformanceRate());
   }
 
   @Override
