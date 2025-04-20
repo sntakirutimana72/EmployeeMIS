@@ -154,7 +154,7 @@ public class Helpers {
 
     public static <E extends Nameable & Trackable<Integer>> int selectEntity(String tag, Scanner scanner, List<E> items) throws Errors.AbortException {
       int selection = select(
-        String.format("*** Select %s ***", tag),
+        String.format("Select %s", tag),
         scanner,
         items.stream().map(E::getName).toList()
       );

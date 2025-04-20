@@ -20,7 +20,7 @@ public class Permissions extends Controller {
   public void process() throws Helpers.Errors.AbortException {
     Helpers.Printer.alert("Permission Menu");
 
-    int choice = Helpers.Selectors.select("*** Select options ***", getApp().getScanner(), new ArrayList<>(List.of(
+    int choice = Helpers.Selectors.select("Select option", getApp().getScanner(), new ArrayList<>(List.of(
       "List All Permissions",
       "Create Permission",
       "Update Permission",

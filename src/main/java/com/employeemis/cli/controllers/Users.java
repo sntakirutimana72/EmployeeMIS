@@ -20,7 +20,7 @@ public class Users extends Controller {
   public void process() throws Helpers.Errors.AbortException {
     Helpers.Printer.alert("User Menu");
 
-    int choice = Helpers.Selectors.select("*** Select options ***", getApp().getScanner(), new ArrayList<>(List.of(
+    int choice = Helpers.Selectors.select("Select option", getApp().getScanner(), new ArrayList<>(List.of(
       "List All Users",
       "Create User",
       "Update User",

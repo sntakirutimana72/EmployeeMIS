@@ -92,7 +92,7 @@ public class Departments extends Controller {
     //noinspection InfiniteLoopStatement
     while (true) {
       try {
-        int choice = Helpers.Selectors.select("*** Select options ***", getApp().getScanner(), new ArrayList<>(List.of(
+        int choice = Helpers.Selectors.select("Select option", getApp().getScanner(), new ArrayList<>(List.of(
           "List All Departments",
           "Create Department",
           "Update Department",

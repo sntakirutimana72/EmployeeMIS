@@ -16,7 +16,7 @@ public class Employees extends Controller {
   
   public Employees(Main app) {
     super(app);
-    Helpers.Printer.alert("EmployeesController Menu");
+    Helpers.Printer.alert("Employees Menu");
     
     listOfEmployees = new ArrayList<>();
   }
@@ -60,7 +60,7 @@ public class Employees extends Controller {
     listOfEmployees = choice == 0 ?
       getRepository().getAll() :
       getRepository().getTop5Paid();
-    previewTable(choice == 0 ? "List of All EmployeesController" : "List of Top 5 Paid EmployeesController");
+    previewTable(choice == 0 ? "List of All Employees" : "List of Top 5 Paid Employees");
   }
 
   private void processCreate() throws Helpers.Errors.AbortException {
@@ -194,8 +194,8 @@ public class Employees extends Controller {
     while (true) {
       try {
         int choice = Helpers.Selectors.select("Select option", getScanner(), new ArrayList<>(List.of(
-          "List All EmployeesController",
-          "List Top 5 Paid EmployeesController",
+          "List All Employees",
+          "List Top 5 Paid Employees",
           "Show Employee Salary Average (By Department)",
           "Create Employee",
           "Update Employee",

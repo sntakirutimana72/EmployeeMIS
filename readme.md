@@ -51,7 +51,7 @@ For example:
   +--------------------------------------------------+
   |      Welcome To Employee Management System       |
   +--------------------------------------------------+
-  *** *** Select option *** ***
+  *** Select option ***
   1. Login
   2. Exit
   >

@@ -61,7 +61,7 @@ public class Main {
       try {
         if (isLoggedIn()) {
           choice = Helpers.Selectors.select(
-            "*** Select option ***", getScanner(), new ArrayList<>(
+            "Select option", getScanner(), new ArrayList<>(
               List.of("Users", "Employees", "Departments", "Permissions", "Logout", "Exit")
             )
           );
@@ -75,7 +75,7 @@ public class Main {
           }
         } else {
           choice = Helpers.Selectors.select(
-            "*** Select option ***", getScanner(), new ArrayList<>(List.of("Login", "Exit")));
+            "Select option", getScanner(), new ArrayList<>(List.of("Login", "Exit")));
           if (choice == 0)
             sessionId = new com.employeemis.cli.controllers.Login(this).post();
           else
